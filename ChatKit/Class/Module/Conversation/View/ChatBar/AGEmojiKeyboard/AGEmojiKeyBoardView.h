@@ -58,6 +58,10 @@ typedef NS_ENUM(NSInteger, AGEmojiKeyboardViewCategoryImage) {
 - (instancetype)initWithFrame:(CGRect)frame
                    dataSource:(id<AGEmojiKeyboardViewDataSource>)dataSource;
 
+/**
+ 判断表情是否是自定义表情
+ */
+- (BOOL)stringIsFace:(NSString *)string;
 @end
 
 

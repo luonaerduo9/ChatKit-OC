@@ -413,24 +413,63 @@ static CGFloat const kLCCKVolumeMaxTimeLength = 15;
     }
 }
 
+//判断最后的string是否含系统emoji
+- (NSMutableDictionary *)lastStringIsSystemEmoji:(NSString *)string
+{
+    __block NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
+    
+    [string enumerateSubstringsInRange:NSMakeRange(0, [string length])
+                               options:NSStringEnumerationByComposedCharacterSequences
+                            usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                                const unichar high = [substring characterAtIndex: 0];
+                                
+                                // Surrogate pair (U+1D000-1F9FF)
+                                if (0xD800 <= high && high <= 0xDBFF) {
+                                    const unichar low = [substring characterAtIndex: 1];
+                                    const int codepoint = ((high - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
+                                    
+                                    if (0x1D000 <= codepoint && codepoint <= 0x1F9FF){
+                                        [returnValue setObject:@(1) forKey:@"isEmoji"];
+                                        [returnValue setObject:@(substringRange.length) forKey:@"emojilength"];
+                                    }
+                                    
+                                    // Not surrogate pair (U+2100-27BF)
+                                } else {
+                                    if (0x2100 <= high && high <= 0x27BF){
+                                        [returnValue setObject:@(1) forKey:@"isEmoji"];
+                                        [returnValue setObject:@(substringRange.length) forKey:@"emojilength"];
+                                    } else {
+                                        [returnValue setObject:@(0) forKey:@"isEmoji"];
+                                        [returnValue setObject:@(0) forKey:@"emojilength"];
+                                    }
+                                }
+                            }];
+    
+    return returnValue;
+}
+
 - (void)emojiKeyBoardViewDidPressBackSpace:(AGEmojiKeyboardView *)emojiKeyBoardView {
     NSString *chatText = self.textView.text;
-//    if (chatText.length >= 2) {
-////        [chatText.]
-//        NSString *subStr = [chatText substringFromIndex:chatText.length-2];
-//        if ([(DXFaceView *)self.faceView stringIsFace:subStr]) {
-//            self.textView.text = [chatText substringToIndex:chatText.length-2];
-//            return;
-//        }
-//    }
-//
-//    if (chatText.length > 0) {
-//        self.inputTextView.text = [chatText substringToIndex:chatText.length-1];
-//    }
     if (chatText.length >= 2) {
-        self.textView.text = [chatText substringToIndex:chatText.length-2];
-        [self textViewDidChange:self.textView];
+        NSString *subStr = [chatText substringFromIndex:chatText.length-2];
+        if ([emojiKeyBoardView stringIsFace:subStr]) {
+            self.textView.text = [chatText substringToIndex:chatText.length-2];
+            [self textViewDidChange:self.textView];
+            return;
+        }
     }
+    if (chatText.length > 0) {
+        NSMutableDictionary *dic = [self lastStringIsSystemEmoji:chatText];
+        if ([[dic objectForKey:@"isEmoji"] integerValue]) {
+            self.textView.text = [chatText substringToIndex:chatText.length-[[dic objectForKey:@"emojilength"] integerValue]];
+            [self textViewDidChange:self.textView];
+            return;
+        }
+    }
+    if (chatText.length > 0) {
+        self.textView.text = [chatText substringToIndex:chatText.length-1];
+    }
+    [self textViewDidChange:self.textView];
 }
 
 - (UIColor *)randomColor {

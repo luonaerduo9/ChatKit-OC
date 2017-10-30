@@ -47,6 +47,13 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
   return _emojis;
 }
 
+- (BOOL)stringIsFace:(NSString *)string {
+    if ([[self recentEmojis] containsObject:string]) {
+        return YES;
+    }
+    return NO;
+}
+
 - (NSString *)categoryNameAtIndex:(NSUInteger)index {
   NSArray *categoryList = @[segmentRecentName, @"People", @"Objects", @"Nature", @"Places", @"Symbols"];
   return categoryList[index];
