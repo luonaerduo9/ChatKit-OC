@@ -635,7 +635,7 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
         dispatch_async(dispatch_get_main_queue(),^{
             [weakSelf loadLatestMessagesHandler:succeeded error:error];
             BOOL isFirstTimeMeet = (([object count] == 0) && succeeded);
-            [self sendWelcomeMessageIfNeeded:isFirstTimeMeet];
+//            [self sendWelcomeMessageIfNeeded:isFirstTimeMeet];
         });
     }];
 }

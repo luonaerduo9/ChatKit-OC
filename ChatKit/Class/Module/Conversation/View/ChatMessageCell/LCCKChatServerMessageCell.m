@@ -29,7 +29,7 @@
         make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-offset);
         CGFloat width = [UIApplication sharedApplication].keyWindow.frame.size.width;
         CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height;
-        CGFloat widthLimit = MIN(width, height)/5 * 4;
+        CGFloat widthLimit = MIN(width, height)/5 * 3.5;
         make.width.lessThanOrEqualTo(@(widthLimit));
         make.centerX.equalTo(self.contentView.mas_centerX);
     }];
@@ -81,7 +81,7 @@
         style.paragraphSpacing = 0.15 * font.lineHeight;
         style.hyphenationFactor = 1.0;
         style.lineBreakMode = NSLineBreakByWordWrapping;
-        style.alignment = NSTextAlignmentCenter;
+        style.alignment = NSTextAlignmentLeft;
         _systemMessageStyle = @{
                                 NSFontAttributeName: font,
                                 NSParagraphStyleAttributeName: style,

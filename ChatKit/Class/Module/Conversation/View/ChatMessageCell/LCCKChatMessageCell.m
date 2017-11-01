@@ -396,11 +396,15 @@ static CGFloat const LCCK_MSG_CELL_NICKNAME_FONT_SIZE = 12;
         _avatarImageView = [[UIImageView alloc] init];
         _avatarImageView.contentMode = UIViewContentModeScaleAspectFit;
         LCCKAvatarImageViewCornerRadiusBlock avatarImageViewCornerRadiusBlock = [LCChatKit sharedInstance].avatarImageViewCornerRadiusBlock;
-        if (avatarImageViewCornerRadiusBlock) {
-            CGSize avatarImageViewSize = CGSizeMake(kAvatarImageViewWidth, kAvatarImageViewHeight);
-            CGFloat avatarImageViewCornerRadius = avatarImageViewCornerRadiusBlock(avatarImageViewSize);
-            self.avatarImageView.lcck_cornerRadius = avatarImageViewCornerRadius;
-        }
+        //直接修改头像圆角,避免block设置时闪动的效果
+        _avatarImageView.layer.cornerRadius = avatarImageViewCornerRadiusBlock(CGSizeMake(kAvatarImageViewWidth, kAvatarImageViewHeight));
+        _avatarImageView.layer.masksToBounds = YES;
+//        if (avatarImageViewCornerRadiusBlock) {
+//            CGSize avatarImageViewSize = CGSizeMake(kAvatarImageViewWidth, kAvatarImageViewHeight);
+//            CGFloat avatarImageViewCornerRadius = avatarImageViewCornerRadiusBlock(avatarImageViewSize);
+//            _avatarImageView.frame = CGRectMake(0, 0, kAvatarImageViewWidth, kAvatarImageViewHeight);//这一句代码是我后来加上的，可以使圆角立刻生效
+//            self.avatarImageView.lcck_cornerRadius = avatarImageViewCornerRadius;
+//        }
         [self bringSubviewToFront:_avatarImageView];
     }
     return _avatarImageView;
