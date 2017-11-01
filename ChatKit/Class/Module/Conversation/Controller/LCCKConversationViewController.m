@@ -34,7 +34,7 @@
 #import "LCCKSafariActivity.h"
 #import "LCCKAlertController.h"
 #import "LCCKPhotoBrowser.h"
-
+#import "UIColor+LCCKExtension.h"
 
 #if __has_include(<CYLDeallocBlockExecutor/CYLDeallocBlockExecutor.h>)
 #import <CYLDeallocBlockExecutor/CYLDeallocBlockExecutor.h>
@@ -213,6 +213,7 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
     self.navigationController.interactivePopGestureRecognizer.delaysTouchesBegan = NO;
     self.tableView.delegate = self.chatViewModel;
     self.tableView.dataSource = self.chatViewModel;
+    self.tableView.backgroundColor = [UIColor CJ_16_Color:@"FFFFFF"];
     self.chatBar.delegate = self;
     [self.view addSubview:self.chatBar];
     [self.view addSubview:self.clientStatusView];

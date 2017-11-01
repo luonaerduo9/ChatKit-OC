@@ -8,6 +8,7 @@
 
 #import "LCCKCellRegisterController.h"
 #import "LCCKChatSystemMessageCell.h"
+#import "LCCKChatServerMessageCell.h"
 #import "LCCKConstants.h"
 
 @implementation LCCKCellRegisterController
@@ -19,6 +20,7 @@
         }
     }];
     [self registerSystemMessageCellClassForTableView:tableView];
+    [self registerServerMessageCellClassForTableView:tableView];
 }
 
 + (void)registerMessageCellClass:(Class)messageCellClass ForTableView:(UITableView *)tableView  {
@@ -40,6 +42,11 @@
 + (void)registerSystemMessageCellClassForTableView:(UITableView *)tableView {
     [tableView registerClass:[LCCKChatSystemMessageCell class] forCellReuseIdentifier:@"LCCKChatSystemMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierSingle"];
     [tableView registerClass:[LCCKChatSystemMessageCell class] forCellReuseIdentifier:@"LCCKChatSystemMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierGroup"];
+}
+
++ (void)registerServerMessageCellClassForTableView:(UITableView *)tableView {
+    [tableView registerClass:[LCCKChatServerMessageCell class] forCellReuseIdentifier:@"LCCKChatServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierSingle"];
+    [tableView registerClass:[LCCKChatServerMessageCell class] forCellReuseIdentifier:@"LCCKChatServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierGroup"];
 }
 
 @end

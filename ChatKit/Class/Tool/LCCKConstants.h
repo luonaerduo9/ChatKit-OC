@@ -153,6 +153,7 @@ typedef NS_ENUM(NSUInteger, LCCKMessageOwnerType){
 };
 
 static AVIMMessageMediaType const kAVIMMessageMediaTypeSystem = -7;
+static AVIMMessageMediaType const kAVIMMessageMediaTypeServer = -8;
 
 /**
  *  消息发送状态,自己发送的消息时有

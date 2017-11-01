@@ -1,15 +1,13 @@
 //
-//  LCCKChatSystemMessageCell.m
-//  LCCKChatExample
+//  LCCKChatServerMessageCell.m
+//  AVOSCloud
 //
-//  v0.8.5 Created by ElonChan ( https://github.com/leancloud/ChatKit-OC ) on 15/11/17.
-//  Copyright © 2015年 https://LeanCloud.cn . All rights reserved.
+//  Created by Aono on 2017/10/31.
 //
 
-#import "LCCKChatSystemMessageCell.h"
+#import "LCCKChatServerMessageCell.h"
 #import "UIColor+LCCKExtension.h"
-
-@interface LCCKChatSystemMessageCell ()
+@interface LCCKChatServerMessageCell ()
 
 @property (nonatomic, weak) UILabel *systemMessageLabel;
 @property (nonatomic, strong) UIView *systemmessageContentView;
@@ -18,8 +16,7 @@
 @property (nonatomic, strong) UIColor *conversationViewTimeLineBackgroundColor;
 
 @end
-
-@implementation LCCKChatSystemMessageCell
+@implementation LCCKChatServerMessageCell
 @synthesize systemMessageStyle = _systemMessageStyle;
 
 #pragma mark - Override Methods
@@ -32,7 +29,7 @@
         make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-offset);
         CGFloat width = [UIApplication sharedApplication].keyWindow.frame.size.width;
         CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height;
-        CGFloat widthLimit = MIN(width, height)/5 * 3;
+        CGFloat widthLimit = MIN(width, height)/5 * 4;
         make.width.lessThanOrEqualTo(@(widthLimit));
         make.centerX.equalTo(self.contentView.mas_centerX);
     }];
@@ -51,7 +48,7 @@
 
 - (void)configureCellWithData:(LCCKMessage *)message {
     [super configureCellWithData:message];
-    self.systemMessageLabel.attributedText = [[NSAttributedString alloc] initWithString:message.systemText attributes:self.systemMessageStyle];
+    self.systemMessageLabel.attributedText = [[NSAttributedString alloc] initWithString:message.text attributes:self.systemMessageStyle];
 }
 
 #pragma mark - Getters
@@ -63,7 +60,7 @@
         _systemmessageContentView.alpha = 1.0f;
         _systemmessageContentView.layer.cornerRadius = 6.0f;
         _systemmessageContentView.translatesAutoresizingMaskIntoConstraints = NO;
-
+        
         UILabel *systemMessageLabel = [[UILabel alloc] init];
         systemMessageLabel.numberOfLines = 0;
         systemMessageLabel.textColor = self.conversationViewTimeLineTextColor;
@@ -86,10 +83,10 @@
         style.lineBreakMode = NSLineBreakByWordWrapping;
         style.alignment = NSTextAlignmentCenter;
         _systemMessageStyle = @{
-                 NSFontAttributeName: font,
-                 NSParagraphStyleAttributeName: style,
-                 NSForegroundColorAttributeName: self.conversationViewTimeLineTextColor
-                 };
+                                NSFontAttributeName: font,
+                                NSParagraphStyleAttributeName: style,
+                                NSForegroundColorAttributeName: self.conversationViewTimeLineTextColor
+                                };
     }
     return _systemMessageStyle;
 }
@@ -102,7 +99,7 @@
 }
 
 + (AVIMMessageMediaType)classMediaType {
-    return kAVIMMessageMediaTypeSystem;
+    return kAVIMMessageMediaTypeServer;
 }
 
 - (UIColor *)conversationViewTimeLineTextColor {

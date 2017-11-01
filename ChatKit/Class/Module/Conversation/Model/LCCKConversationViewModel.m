@@ -17,6 +17,7 @@
 #import "LCCKChatImageMessageCell.h"
 #import "LCCKChatVoiceMessageCell.h"
 #import "LCCKChatSystemMessageCell.h"
+#import "LCCKChatServerMessageCell.h"
 #import "LCCKChatLocationMessageCell.h"
 
 #import "LCCKAVAudioPlayer.h"
