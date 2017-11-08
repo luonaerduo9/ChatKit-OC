@@ -9,6 +9,8 @@
 #import "LCCKCellRegisterController.h"
 #import "LCCKChatSystemMessageCell.h"
 #import "LCCKChatServerMessageCell.h"
+#import "LCCKChatPServerMessageCell.h"
+#import "LCCKChatRecallMessageCell.h"
 #import "LCCKConstants.h"
 
 @implementation LCCKCellRegisterController
@@ -47,6 +49,12 @@
 + (void)registerServerMessageCellClassForTableView:(UITableView *)tableView {
     [tableView registerClass:[LCCKChatServerMessageCell class] forCellReuseIdentifier:@"LCCKChatServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierSingle"];
     [tableView registerClass:[LCCKChatServerMessageCell class] forCellReuseIdentifier:@"LCCKChatServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierGroup"];
+    [tableView registerClass:[LCCKChatPServerMessageCell class] forCellReuseIdentifier:@"LCCKChatPServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierSingle"];
+    [tableView registerClass:[LCCKChatPServerMessageCell class] forCellReuseIdentifier:@"LCCKChatPServerMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierGroup"];
+
+    [tableView registerClass:[LCCKChatRecallMessageCell class] forCellReuseIdentifier:@"LCCKChatRecallMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierSingle"];
+    [tableView registerClass:[LCCKChatRecallMessageCell class] forCellReuseIdentifier:@"LCCKChatRecallMessageCell_LCCKCellIdentifierOwnerSystem_LCCKCellIdentifierGroup"];
+
 }
 
 @end

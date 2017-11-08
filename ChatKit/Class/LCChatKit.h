@@ -34,6 +34,10 @@
  *  appkey
  */
 @property (nonatomic, copy, readonly) NSString *appKey;
+/*!
+ *  appType  大众端为1 医生端为2
+ */
+@property (nonatomic, copy, readonly) NSString *appType;
 
 /*!
  *
@@ -43,7 +47,7 @@
               前者为 LeanCloud-SDK 初始化，后者为 ChatKit 初始化。后者需要你在**每次**登录操作时调用一次，前者只需要你在程序启动时调用。
               如果你使用了 LeanCloud-SDK 的其他功能，你可能要根据需要，这两个方法都使用到。
  */
-+ (void)setAppId:(NSString *)appId appKey:(NSString *)appKey;
++ (void)setAppId:(NSString *)appId appKey:(NSString *)appKey appType:(NSString *)appType;
 
 /*!
  *  Returns the shared instance of LCChatKit, creating it if necessary.

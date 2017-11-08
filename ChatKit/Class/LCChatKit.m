@@ -18,6 +18,11 @@
  *  appkey
  */
 @property (nonatomic, copy, readwrite) NSString *appKey;
+/*!
+ *  appType
+ */
+@property (nonatomic, copy, readwrite) NSString *appType;
+
 @end
 
 @implementation LCChatKit
@@ -67,10 +72,11 @@
 #pragma mark -
 #pragma mark - LCChatKit Method
 
-+ (void)setAppId:(NSString *)appId appKey:(NSString *)appKey {
++ (void)setAppId:(NSString *)appId appKey:(NSString *)appKey appType:(NSString *)appType {
     [AVOSCloud setApplicationId:appId clientKey:appKey];
     [LCChatKit sharedInstance].appId = appId;
     [LCChatKit sharedInstance].appKey = appKey;
+    [LCChatKit sharedInstance].appType = appType;
     if ([LCCKSettingService allLogsEnabled]) {
         LCCKLog(@"ChatKit Version is %@", [LCCKSettingService ChatKitVersion]);
     }

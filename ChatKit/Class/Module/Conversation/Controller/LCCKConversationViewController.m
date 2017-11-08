@@ -49,7 +49,7 @@
 
 NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationViewControllerErrorDomain";
 
-@interface LCCKConversationViewController () <LCCKChatBarDelegate, LCCKChatMessageCellDelegate, LCCKConversationViewModelDelegate, LCCKPhotoBrowserDelegate>
+@interface LCCKConversationViewController () <LCCKChatBarDelegate, LCCKChatMessageCellDelegate, LCCKConversationViewModelDelegate, LCCKPhotoBrowserDelegate,AVIMConversationDelegate>
 
 @property (nonatomic, strong, readwrite) AVIMConversation *conversation;
 //@property (copy, nonatomic) NSString *messageSender /**< 正在聊天的用户昵称 */;
@@ -230,6 +230,7 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self conversation];
+    [self.conversation addDelegate:self];
     !self.viewWillAppearBlock ?: self.viewWillAppearBlock(self, animated);
 }
 
@@ -634,7 +635,7 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
     [self.chatViewModel loadMessagesFirstTimeWithCallback:^(BOOL succeeded, id object, NSError *error) {
         dispatch_async(dispatch_get_main_queue(),^{
             [weakSelf loadLatestMessagesHandler:succeeded error:error];
-            BOOL isFirstTimeMeet = (([object count] == 0) && succeeded);
+//            BOOL isFirstTimeMeet = (([object count] == 0) && succeeded);
 //            [self sendWelcomeMessageIfNeeded:isFirstTimeMeet];
         });
     }];
@@ -912,6 +913,10 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
     [self reloadAfterReceiveMessage];
 }
 
+- (void)withdrawMessage:(LCCKChatMessageCell *)messageCell {
+    [self.chatViewModel withdrawMessageForMessageCell:messageCell];
+}
+
 - (void)messageCell:(LCCKChatMessageCell *)messageCell didTapLinkText:(NSString *)linkText linkType:(MLLinkType)linkType {
     switch (linkType) {
         case MLLinkTypeURL: {
@@ -978,6 +983,21 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
 - (void)reloadAfterReceiveMessage {
     [self.tableView reloadData];
     [self scrollToBottomAnimated:YES];
+}
+
+#pragma mark - 撤回
+/* 实现 delegate 方法，以处理消息修改和撤回的事件 */
+- (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
+    /* A message has been updated or recalled. */
+
+    switch (message.mediaType) {
+        case kAVIMMessageMediaTypeRecalled:
+            NSLog(@"message 是一条撤回消息");
+            break;
+        default:
+            NSLog(@"message 是一条更新消息");
+            break;
+    }
 }
 
 #pragma mark - LCCKAVAudioPlayerDelegate

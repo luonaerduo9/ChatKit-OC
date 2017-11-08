@@ -27,6 +27,9 @@
                 if (message) {
                     [messages addObject:message];
                 }
+                if ([typedMessage.clientId isEqualToString:@"server"] && typedMessage.mediaType != [[LCChatKit sharedInstance].appType integerValue]) {
+                    [messages removeObject:message];
+                }
             }
         };
         

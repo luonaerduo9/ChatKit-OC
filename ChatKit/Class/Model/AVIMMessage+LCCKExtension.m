@@ -8,6 +8,8 @@
 
 #import "AVIMMessage+LCCKExtension.h"
 #import "NSObject+LCCKExtension.h"
+#import "AVIMSystemMessage.h"
+#import "AVIMPSystemMessage.h"
 #if __has_include(<ChatKit/LCChatKit.h>)
 #import <ChatKit/LCChatKit.h>
 #else
@@ -32,6 +34,7 @@
         return (AVIMTypedMessage *)self;
     }
     NSString *messageText;
+    NSString *messageType;
     NSDictionary *attr;
     if ([[self class] isSubclassOfClass:[AVIMMessage class]]) {
         //当存在无法识别的自定义消息，SDK会返回 AVIMMessage 类型
@@ -53,6 +56,26 @@
             messageText = LCCKLocalizedStrings(@"unknownMessage");
             break;
         } while (NO);
+        if ([self.clientId isEqualToString:@"server"]) {
+            messageType = [json valueForKey:@"_lctype"];
+            if ([messageType integerValue] == kAVIMMessageMediaTypeServer) {
+                AVIMSystemMessage *systemMessage = [AVIMSystemMessage messageWithText:messageText attributes:attr];
+                [systemMessage setValue:self.conversationId forKey:@"conversationId"];
+                [systemMessage setValue:self.messageId forKey:@"messageId"];
+                [systemMessage setValue:@(self.sendTimestamp) forKey:@"sendTimestamp"];
+                [systemMessage setValue:self.clientId forKey:@"clientId"];
+                [systemMessage lcck_setObject:@(YES) forKey:LCCKCustomMessageIsCustomKey];
+                return systemMessage;
+            } else if ([messageType integerValue] == kAVIMMessageMediaTypePServer) {
+                AVIMPSystemMessage *systemMessage = [AVIMPSystemMessage messageWithText:messageText attributes:attr];
+                [systemMessage setValue:self.conversationId forKey:@"conversationId"];
+                [systemMessage setValue:self.messageId forKey:@"messageId"];
+                [systemMessage setValue:@(self.sendTimestamp) forKey:@"sendTimestamp"];
+                [systemMessage setValue:self.clientId forKey:@"clientId"];
+                [systemMessage lcck_setObject:@(YES) forKey:LCCKCustomMessageIsCustomKey];
+                return systemMessage;
+            }
+        }
     }
     AVIMTextMessage *typedMessage = [AVIMTextMessage messageWithText:messageText attributes:attr];
     [typedMessage setValue:self.conversationId forKey:@"conversationId"];

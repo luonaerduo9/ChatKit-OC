@@ -355,6 +355,7 @@ NSString *const LCCKSessionServiceErrorDomain = @"LCCKSessionServiceErrorDomain"
                                    LCCKDidReceiveMessagesUserInfoMessagesKey : filterdMessages,
                                    };
         // - 通知相关页面接收到了消息：“当前对话页面”、“最近对话页面”；
+
         [[NSNotificationCenter defaultCenter] postNotificationName:LCCKNotificationMessageReceived object:userInfo];
     };
     

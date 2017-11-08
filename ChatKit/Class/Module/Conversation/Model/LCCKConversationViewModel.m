@@ -18,6 +18,8 @@
 #import "LCCKChatVoiceMessageCell.h"
 #import "LCCKChatSystemMessageCell.h"
 #import "LCCKChatServerMessageCell.h"
+#import "LCCKChatPServerMessageCell.h"
+#import "LCCKChatRecallMessageCell.h"
 #import "LCCKChatLocationMessageCell.h"
 
 #import "LCCKAVAudioPlayer.h"
@@ -564,6 +566,26 @@ fromTimestamp     |    toDate   |                |  上次上拉刷新顶端，�
     [alert showWithSender:nil controller:self.parentConversationViewController animated:YES completion:NULL];
 }
 
+/**
+ *消息撤回
+ */
+- (void)withdrawMessageForMessageCell:(LCCKChatMessageCell *)messageCell {
+    AVIMMessage *oldMessage = [AVIMMessage new];
+    for (AVIMMessage *message in self.avimTypedMessage) {
+        if ([message.messageId isEqualToString:messageCell.message.messageId]) {
+            oldMessage = message;
+            break;
+        }
+    }
+    if (oldMessage) {
+        [self.currentConversation recallMessage:oldMessage
+                                callback:^(BOOL succeeded, NSError * _Nullable error, AVIMRecalledMessage * _Nullable recalledMessage) {
+                                    if (succeeded) {
+
+                                    }
+                                }];
+    }
+}
 /*!
  * 自定义消息暂不支持失败缓存，不支持重发
  */

@@ -13,6 +13,8 @@
 #import "LCCKChatVoiceMessageCell.h"
 #import "LCCKChatSystemMessageCell.h"
 #import "LCCKChatServerMessageCell.h"
+#import "LCCKChatPServerMessageCell.h"
+#import "LCCKChatRecallMessageCell.h"
 #import "LCCKChatLocationMessageCell.h"
 
 #import <objc/runtime.h>
@@ -395,9 +397,7 @@ static CGFloat const LCCK_MSG_CELL_NICKNAME_FONT_SIZE = 12;
     if (!_avatarImageView) {
         _avatarImageView = [[UIImageView alloc] init];
         _avatarImageView.contentMode = UIViewContentModeScaleAspectFit;
-        LCCKAvatarImageViewCornerRadiusBlock avatarImageViewCornerRadiusBlock = [LCChatKit sharedInstance].avatarImageViewCornerRadiusBlock;
-        //直接修改头像圆角,避免block设置时闪动的效果
-        _avatarImageView.layer.cornerRadius = avatarImageViewCornerRadiusBlock(CGSizeMake(kAvatarImageViewWidth, kAvatarImageViewHeight));
+        _avatarImageView.layer.cornerRadius = kAvatarImageViewHeight/2;
         _avatarImageView.layer.masksToBounds = YES;
 //        if (avatarImageViewCornerRadiusBlock) {
 //            CGSize avatarImageViewSize = CGSizeMake(kAvatarImageViewWidth, kAvatarImageViewHeight);
@@ -497,14 +497,30 @@ static CGFloat const LCCK_MSG_CELL_NICKNAME_FONT_SIZE = 12;
             if (longPressMessageBlock) {
                 menuItems = longPressMessageBlock(self.message, userInfo);
             } else {
+                //复制
                 LCCKMenuItem *copyItem = [[LCCKMenuItem alloc] initWithTitle:LCCKLocalizedStrings(@"copy")
                                                                        block:^{
                                                                            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                                                                            [pasteboard setString:[self.message text]];
                                                                        }];
-                //TODO:添加“转发”
-                if (self.mediaType == kAVIMMessageMediaTypeText) {
-                    menuItems = @[ copyItem ];
+                //撤回
+                LCCKMenuItem *withdrawItem = [[LCCKMenuItem alloc] initWithTitle:LCCKLocalizedStrings(@"withdraw")
+                                                                           block:^{
+                    if ([self.delegate respondsToSelector:@selector(withdrawMessage:)]) {
+                        [self.delegate withdrawMessage:self];
+                    }
+                                                                           }];
+                double now = [NSDate date].timeIntervalSince1970;
+                if ((now - self.message.timestamp/1000)<3*60 && self.message.ownerType == LCCKMessageOwnerTypeSelf && self.message.sendStatus == LCCKMessageSendStateSent) {
+                    if (self.mediaType == kAVIMMessageMediaTypeText) {
+                        menuItems = @[copyItem, withdrawItem];
+                    }
+                    else {
+                        menuItems = @[withdrawItem];
+                    }
+                }
+                else {
+                    menuItems = @[copyItem];
                 }
             }
             UIMenuController *menuController = [UIMenuController sharedMenuController];

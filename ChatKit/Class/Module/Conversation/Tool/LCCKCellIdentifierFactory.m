@@ -13,6 +13,7 @@
 #import "AVIMTypedMessage+LCCKExtension.h"
 #import "LCCKConstants.h"
 #import "LCCKChatServerMessageCell.h"
+#import "LCCKChatPServerMessageCell.h"
 
 @implementation LCCKCellIdentifierFactory
 
@@ -62,7 +63,12 @@
     }
     NSAssert(typeKey.length > 0, @"🔴类名与方法名：%@（在第%@行），描述：%@,%@", @(__PRETTY_FUNCTION__), @(__LINE__), @(message.mediaType), NSStringFromClass([message class]));
     if ([message.senderId isEqualToString:@"server"]) {
-        typeKey = NSStringFromClass([LCCKChatServerMessageCell class]);
+        if (message.mediaType == kAVIMMessageMediaTypeServer) {
+            typeKey = NSStringFromClass([LCCKChatServerMessageCell class]);
+        }
+        else if (message.mediaType == kAVIMMessageMediaTypePServer) {
+            typeKey = NSStringFromClass([LCCKChatPServerMessageCell class]);
+        }
         ownerKey = LCCKCellIdentifierOwnerSystem;
     }
     NSString *cellIdentifier = [NSString stringWithFormat:@"%@_%@_%@", typeKey, ownerKey, groupKey];

@@ -49,6 +49,7 @@
 - (void)avatarImageViewLongPressed:(LCCKChatMessageCell *)messageCell;
 - (void)messageCell:(LCCKChatMessageCell *)messageCell didTapLinkText:(NSString *)linkText linkType:(MLLinkType)linkType;
 - (void)fileMessageDidDownload:(LCCKChatMessageCell *)messageCell;
+- (void)withdrawMessage:(LCCKChatMessageCell *)messageCell;
 
 @end
 

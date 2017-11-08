@@ -275,6 +275,23 @@
     return self;
 }
 
+- (instancetype)initWithRecallText:(NSString *)text
+                          senderId:(NSString *)senderId
+                            sender:(id<LCCKUserDelegate>)sender
+                         timestamp:(NSTimeInterval)timestamp
+                   serverMessageId:(NSString *)serverMessageId {
+    self = [super init];
+    if (self) {
+        _text = text;
+        _sender = sender;
+        _senderId = senderId;
+        _timestamp = timestamp;
+        _serverMessageId = serverMessageId;
+        _mediaType = kAVIMMessageMediaTypeRecalled;
+    }
+    return self;
+}
+
 + (id)messageWithAVIMTypedMessage:(AVIMTypedMessage *)message {
     //FIXME:自定义消息
     if ([message lcck_isCustomMessage]) {
@@ -341,6 +358,17 @@
             //        }
         case kAVIMMessageMediaTypeVideo: {
             //TODO:
+            break;
+        }
+        case kAVIMMessageMediaTypeRecalled:{
+            NSString *recallText = @"";
+            if ([[LCCKSessionService sharedInstance].clientId isEqualToString:message.clientId]) {
+                recallText = @"你撤回了一条消息";
+            }
+            else {
+                recallText = @"对方撤回了一条消息";
+            }
+            lcckMessage = [[LCCKMessage alloc] initWithRecallText:recallText senderId:senderId sender:sender timestamp:time serverMessageId:serverMessageId];
             break;
         }
         default: {
