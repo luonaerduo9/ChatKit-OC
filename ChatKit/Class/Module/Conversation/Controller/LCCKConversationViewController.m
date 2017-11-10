@@ -992,7 +992,7 @@ NSString *const LCCKConversationViewControllerErrorDomain = @"LCCKConversationVi
 
     switch (message.mediaType) {
         case kAVIMMessageMediaTypeRecalled:
-            NSLog(@"message 是一条撤回消息");
+            [self.chatViewModel otherRecallMessageWithMessage:message];
             break;
         default:
             NSLog(@"message 是一条更新消息");

@@ -569,10 +569,31 @@ fromTimestamp     |    toDate   |                |  上次上拉刷新顶端，�
 /**
  *消息撤回
  */
+- (void)otherRecallMessageWithMessage:(id)message {
+    AVIMRecalledMessage *recalledMessage = (AVIMRecalledMessage *)message;
+    LCCKMessage *oldMessage;
+    for (LCCKMessage *lcckMessage in self.dataArray) {
+        if ([lcckMessage.messageId isEqualToString:recalledMessage.messageId]) {
+            oldMessage = lcckMessage;
+            break;
+        }
+    }
+    [self.dataArray removeObject:oldMessage];
+    [self.dataArray addObject:[LCCKMessage messageWithAVIMTypedMessage:recalledMessage]];
+    [self.parentConversationViewController.tableView reloadData];
+}
+
 - (void)withdrawMessageForMessageCell:(LCCKChatMessageCell *)messageCell {
+    NSLog(@"messageCell.indexPath.row = %ld",messageCell.indexPath.row);
     AVIMMessage *oldMessage = [AVIMMessage new];
     for (AVIMMessage *message in self.avimTypedMessage) {
         if ([message.messageId isEqualToString:messageCell.message.messageId]) {
+            oldMessage = message;
+            break;
+        }
+        NSInteger sendTimestamp = message.sendTimestamp/1000;
+        NSInteger timestamp = messageCell.message.timestamp/1000;
+        if (sendTimestamp == timestamp) {
             oldMessage = message;
             break;
         }
@@ -581,7 +602,11 @@ fromTimestamp     |    toDate   |                |  上次上拉刷新顶端，�
         [self.currentConversation recallMessage:oldMessage
                                 callback:^(BOOL succeeded, NSError * _Nullable error, AVIMRecalledMessage * _Nullable recalledMessage) {
                                     if (succeeded) {
-
+                                        dispatch_async(dispatch_get_main_queue(),^{
+                                            [self.dataArray removeObject:messageCell.message];
+                                            [self.dataArray addObject:[LCCKMessage messageWithAVIMTypedMessage:recalledMessage]];
+                                            [self.parentConversationViewController.tableView reloadData];
+                                        });
                                     }
                                 }];
     }
